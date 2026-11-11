@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Museu Virtual 3MC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --wall:#1F1640; --wall2:#2A1E54; --pale:#EBD7A6; --pale-edge:#CDB27A; --pale-card:#F7EDCF; --ink:#231A47; --ink-soft:#4A4170;
+  --txt:#F1ECF8; --muted:#BDB3DD; --brass:#C99A3C; --brass-soft:#E6C57A; --rose:#E0568D; --frame:#120D2B;
+  --head:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Hanken Grotesk','Segoe UI',Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--wall);color:var(--txt);font-family:var(--body);font-size:1.08rem;line-height:1.7}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+h1,h2,h3{font-family:var(--head);margin:0;line-height:1.1}
+a{color:inherit}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--brass-soft);outline-offset:3px}
+
+/* barra de navegação */
+nav{position:sticky;top:0;z-index:5;background:var(--frame);border-bottom:1px solid var(--brass);display:flex;gap:1.3rem;align-items:center;padding:.8rem 1.2rem;overflow-x:auto;white-space:nowrap}
+nav b{font-family:var(--head);font-weight:600;color:var(--brass-soft);margin-right:auto;font-size:1.1rem}
+nav a{font-family:var(--head);font-weight:600;font-size:1rem;color:var(--txt);text-decoration:none}
+nav a:hover{color:var(--brass-soft)}
+
+/* entrada do museu */
+.hero{position:relative;overflow:hidden;padding:4.5rem 1.2rem 5.5rem;text-align:center;
+  background:
+   radial-gradient(ellipse 60% 70% at 50% 0%,rgba(230,197,122,.34),transparent 70%),
+   linear-gradient(var(--wall),#170F34)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18px;background:var(--frame);border-top:3px solid var(--brass)}
+.hero .door{position:relative;max-width:820px;margin:0 auto;padding:3rem 1.5rem 3.2rem;border:1px solid var(--brass);outline:1px solid rgba(201,154,60,.45);outline-offset:10px}
+.hero .tag{font-family:var(--head);font-style:italic;margin:0 0 1.2rem;color:var(--brass-soft);font-size:1.05rem}
+.hero h1{font-weight:700;font-size:clamp(2.5rem,9vw,5.4rem);letter-spacing:-.02em}
+.hero h1 span{display:block;font-style:italic;font-weight:400;color:var(--brass-soft);margin-top:.15em}
+.hero .sub{font-family:var(--head);max-width:40ch;margin:1.6rem auto 2rem;font-size:1.2rem;color:var(--txt)}
+.btn{font-family:var(--head);display:inline-block;background:var(--brass);color:#1B1330;font-weight:700;padding:.8rem 1.5rem;border-radius:4px;text-decoration:none}
+.btn:hover{background:var(--brass-soft)}
+
+/* salas */
+.room{position:relative;padding:4.5rem 1.5rem 5rem}
+.room::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14px;background:var(--frame);border-top:2px solid var(--brass)}
+.room.dark{background:linear-gradient(var(--wall),#1A1238)}
+.room.light{background:var(--pale);color:var(--ink)}
+.room.light::after{background:var(--pale-edge);border-top-color:var(--brass)}
+.wrap{max-width:1000px;margin:0 auto}
+.room-grid{display:grid;gap:2.2rem 3rem;grid-template-columns:minmax(0,1fr)}
+@media (min-width:860px){.room-grid{grid-template-columns:260px minmax(0,1fr);align-items:start}.plaque{position:static}}
+
+/* placa de parede */
+.plaque{border:1px solid var(--brass);padding:1.2rem 1.3rem 1.4rem;background:rgba(18,13,43,.55)}
+.light .plaque{background:var(--pale-card);border-color:var(--brass)}
+.plaque .room-no{margin:0 0 .6rem;font-size:.95rem;color:var(--brass-soft);font-weight:600}
+.light .plaque .room-no{color:#8A6516}
+.plaque h2{font-size:clamp(1.8rem,4.5vw,2.3rem);font-weight:700;overflow-wrap:break-word;hyphens:auto}
+#equipe .plaque h2{font-size:clamp(1.5rem,4.5vw,1.6rem)}
+
+.exhibit p{max-width:62ch;margin:0 0 1rem}
+.exhibit > p:first-child{font-size:1.18rem}
+.light .exhibit p{color:var(--ink)}
+
+/* textos de apoio (etiquetas) */
+.two{display:grid;gap:1.6rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:1.8rem}
+.label{border-top:3px solid var(--brass);padding-top:.8rem}
+.label h3{font-size:1.3rem;margin-bottom:.4rem}
+.label p{margin:0;font-size:1rem}
+
+/* molduras e espaços de foto */
+.gallery{display:grid;gap:1.6rem;margin-top:1.8rem;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.gallery figure{margin:0}
+.frame{background:var(--frame);padding:10px;border:1px solid var(--brass);box-shadow:0 14px 28px rgba(0,0,0,.35)}
+.light .frame{box-shadow:0 14px 26px rgba(35,26,71,.25)}
+.mat{background:#F6F3EC;padding:12px}
+.slot{display:flex;align-items:center;justify-content:center;text-align:center;color:var(--ink-soft);
+  background:radial-gradient(ellipse at 50% 0%,#fff,#E4DFEC);border:1px dashed #A79FC4;aspect-ratio:4/3;padding:1rem;font-weight:500;font-size:.98rem}
+.frame img,.frame video,.frame iframe{display:block;width:100%;height:auto}
+.gallery figcaption{margin:.9rem auto 0;width:fit-content;max-width:100%;border:1px solid var(--brass);padding:.25rem .8rem;font-size:.88rem;background:rgba(18,13,43,.55);color:var(--txt);text-align:center}
+.light .gallery figcaption{background:var(--pale-card);color:var(--ink)}
+.screen{margin-top:1.4rem}
+.screen .slot{aspect-ratio:16/9;background:radial-gradient(ellipse at 50% 0%,#3A2D70,#120D2B);color:var(--muted);border:1px dashed var(--brass)}
+
+/* perguntas como índice de catálogo */
+.exhibit h3.sub-h{font-size:1.5rem;margin:2.8rem 0 .6rem}
+details{border-bottom:1px solid rgba(201,154,60,.5);padding:.9rem 0}
+summary{cursor:pointer;font-family:var(--head);font-weight:600;font-size:1.12rem}
+details ul{margin:.8rem 0 0;padding-left:1.2rem;max-width:62ch}
+details li{margin-bottom:.4rem}
+
+/* citações na parede */
+.quotes{display:grid;gap:2.2rem;margin-top:1.6rem}
+.quotes figure{margin:0;padding-left:1.4rem;border-left:3px solid var(--brass)}
+.quotes blockquote{margin:0 0 .8rem;font-family:var(--head);font-style:italic;font-size:clamp(1.3rem,3.4vw,1.8rem);line-height:1.35}
+.quotes figcaption{display:inline-block;border:1px solid var(--brass);padding:.25rem .8rem;font-size:.88rem;color:var(--muted)}
+
+
+/* linha do tempo */
+.timeline{list-style:none;margin:1.6rem 0 0;padding:0 0 0 1.6rem;border-left:3px solid var(--brass)}
+.timeline li{position:relative;padding:0 0 2rem 1rem}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:calc(-1.6rem - 9px);top:.55rem;width:15px;height:15px;border-radius:50%;background:var(--wall);border:3px solid var(--brass-soft)}
+.timeline .year{display:inline-block;font-family:var(--head);font-weight:700;font-size:1.5rem;color:var(--brass-soft);line-height:1.2}
+.timeline h3{font-size:1.25rem;margin:.1rem 0 .3rem}
+.timeline p{margin:0;max-width:56ch;font-size:1.02rem}
+
+/* créditos */
+.school{font-family:var(--head);font-weight:700;font-size:1.5rem;color:var(--ink);margin:0 0 1.4rem}
+.credits h3{font-size:1.2rem;margin:1.6rem 0 .7rem}
+.team{list-style:none;margin:0;padding:0;display:grid;gap:.6rem 1.2rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.team li{border-bottom:1px solid var(--brass);padding:.35rem 0;font-family:var(--head);font-weight:600;font-size:1.15rem;color:var(--ink)}
+@media (max-width:600px){
+  .team{grid-template-columns:repeat(2,1fr);gap:.5rem .8rem}
+  .team li{font-size:1rem}
+  .hero .door{outline-offset:6px}
+}
+
+/* saída */
+footer{background:var(--frame);color:var(--txt);text-align:center;padding:3rem 1.5rem;border-top:3px solid var(--brass)}
+footer .thanks{font-family:var(--head);font-size:1.6rem;font-weight:600;color:var(--brass-soft);display:block;margin-bottom:.5rem}
+footer small{display:block;margin-top:.5rem;color:var(--muted);font-size:.95rem}
+</style>
+</head>
+<body>
+
+<nav aria-label="Seções do site">
+  <b>Museu Virtual 3MC</b>
+  <a href="#projeto">O projeto</a>
+  <a href="#piraja">Pirajá</a>
+  <a href="#oya">Instituto Oyá</a>
+  <a href="#cortejo">Cortejo Afro</a>
+  <a href="#video">Entrevistas</a>
+  <a href="#linha">Linha do tempo</a>
+  <a href="#galeria">Fotos</a>
+  <a href="#equipe">Equipe</a>
+</nav>
+
+<header class="hero">
+  <div class="door">
+    <p class="tag">Museu Virtual da turma 3MC</p>
+    <h1>Pirajá, <span>Território Ancestral</span></h1>
+    <p class="sub">História, cultura e patrimônio afro-indígena no bairro, contados por quem vive e faz essa memória.</p>
+    <a class="btn" href="#projeto">Entrar no museu</a>
+  </div>
+</header>
+
+<section id="projeto" class="room light">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 1</p><h2>O projeto</h2></aside>
+    <div class="exhibit">
+      <p>Reunimos relatos, memórias e informações sobre o Instituto Oyá, sua mobilização social comunitária e o ativismo cultural do bloco carnavalesco Cortejo Afro.</p>
+      <p>Nosso objetivo é valorizar a história e a ancestralidade do território onde vivemos e deixar esse registro para as próximas gerações.</p>
+      <div class="two">
+        <div class="label"><h3>Como fizemos</h3><p>Entrevistamos pessoas ligadas ao Instituto, ao Cortejo Afro e à história do bairro, com autorização para gravar e publicar.</p></div>
+        <div class="label"><h3>O que você vai ver</h3><p>Vídeo das entrevistas, fotografias, depoimentos e a história de quem faz Pirajá.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="piraja" class="room dark">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 2</p><h2>Pirajá, território ancestral</h2></aside>
+    <div class="exhibit">
+      <p>Pirajá fica no Subúrbio Ferroviário de Salvador. A região era território tupinambá, foi usada pelos jesuítas para aldeamentos e abrigou quilombo e resistência indígena, como o Quilombo do Urubu, de Zeferina.</p>
+      <p>Foi palco da Batalha de Pirajá (1822), a maior da Independência da Bahia, e fica perto do Parque São Bartolomeu, que guarda a memória do culto aos Caboclos e aos orixás. Hoje é sede do Cortejo Afro e do Instituto Oyá.</p>
+      <div class="gallery">
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto do bairro</figcaption></figure>
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto antiga do bairro</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="oya" class="room light">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 3</p><h2>Instituto Oyá</h2></aside>
+    <div class="exhibit">
+      <p>O Instituto Oyá foi fundado em 1998 (algumas fontes citam 1990), no terreiro Ilê Axé Oyá, em Pirajá, pela Ialorixá Mãe Santinha de Oyá. Seu objetivo é apoiar o desenvolvimento humano e artístico de crianças e jovens do bairro. Oyá é o nome da orixá dos ventos e das tempestades, também conhecida como Iansã.</p>
+      <div class="two">
+        <div class="label"><h3>Projetos sociais e culturais</h3><p>Oyá Educa, Oyá Criativa e Oyá Social, com aulas de percussão, teatro, capoeira, costura, estamparia e reforço escolar.</p></div>
+        <div class="label"><h3>Importância para a comunidade</h3><p>Um espaço de arte, cultura e educação que une a tradição do terreiro à formação e à autoestima da comunidade.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cortejo" class="room dark">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 4</p><h2>Cortejo Afro</h2></aside>
+    <div class="exhibit">
+      <p>O Cortejo Afro nasceu em 1998, em Pirajá, idealizado pelo artista plástico Alberto Pitta, filho de Mãe Santinha. Sua sede fica no mesmo terreiro do Instituto Oyá, ao qual o bloco é ligado. Surgiu para valorizar a percussão e os valores afro-brasileiros no Carnaval de Salvador.</p>
+      <div class="two">
+        <div class="label"><h3>Ancestralidade na festa</h3><p>Percussão, figurinos exuberantes e estampas brancas sobre branco exaltam a estética afro-brasileira.</p></div>
+        <div class="label"><h3>Identidade e resistência</h3><p>Ao colocar a cultura negra no centro da festa, o bloco fortalece a autoestima e o orgulho da identidade negra.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="video" class="room light">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 5</p><h2>As entrevistas</h2></aside>
+    <div class="exhibit">
+      <p>Assista ao vídeo com as conversas que fizemos para o museu.</p>
+      <div class="frame screen"><div class="slot">Aqui entra o vídeo das entrevistas</div></div>
+
+      <h3 class="sub-h">Perguntas que fizemos</h3>
+      <p>Escolhemos as perguntas conforme a função e a experiência de cada pessoa.</p>
+      <details>
+        <summary>Fundador(a) ou responsável pelo Instituto Oyá</summary>
+        <ul><li>Como surgiu o Instituto Oyá e o que motivou sua criação?</li><li>Qual é o significado do nome Oyá?</li><li>Qual conquista mais marcou sua história?</li><li>Que mensagem você deixaria para os jovens?</li></ul>
+      </details>
+      <details>
+        <summary>Quem atua nos projetos sociais do Instituto</summary>
+        <ul><li>Quais atividades você desenvolve com a comunidade?</li><li>Como elas contribuem para a vida dos moradores?</li><li>Qual experiência marcante você viveu nesse trabalho?</li></ul>
+      </details>
+      <details>
+        <summary>Pessoas ligadas ao Cortejo Afro</summary>
+        <ul><li>Como surgiu o Cortejo Afro e qual era sua proposta inicial?</li><li>O que o bloco representa para a cultura afro-brasileira?</li><li>Como o bloco ajuda a combater o racismo e valorizar a identidade negra?</li></ul>
+      </details>
+      <details>
+        <summary>Moradores antigos de Pirajá</summary>
+        <ul><li>Como era o bairro antigamente?</li><li>Quais mudanças você viu ao longo dos anos?</li><li>O que você gostaria que os jovens soubessem sobre a história de Pirajá?</li></ul>
+      </details>
+      <details>
+        <summary>Quem já participou dos projetos do Instituto</summary>
+        <ul><li>De quais projetos você participou?</li><li>Sua participação trouxe alguma mudança para sua vida?</li><li>Qual lembrança mais marcante você guarda?</li></ul>
+      </details>
+      <details>
+        <summary>Artistas, músicos e dançarinos do Cortejo Afro</summary>
+        <ul><li>O que a cultura afro-brasileira representa para você?</li><li>A arte pode ser uma forma de resistência contra o racismo? Por quê?</li><li>Como garantir que essas tradições continuem nas próximas gerações?</li></ul>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="linha" class="room dark">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 6</p><h2>Linha do tempo</h2></aside>
+    <div class="exhibit">
+      <p>Alguns marcos da história de Pirajá, do território tupinambá até os dias de hoje.</p>
+      <ol class="timeline">
+        <li><span class="year">Antes da colonização</span><h3>Território tupinambá</h3><p>A região onde hoje fica Pirajá era território do povo tupinambá.</p></li>
+        <li><span class="year">Período colonial</span><h3>Aldeamentos jesuítas</h3><p>Os jesuítas usaram a região para aldeamentos, e o território também abrigou resistência indígena.</p></li>
+        <li><span class="year">1822</span><h3>Batalha de Pirajá</h3><p>A maior batalha da Independência da Bahia aconteceu em Pirajá.</p></li>
+        <li><span class="year">1826</span><h3>Quilombo do Urubu</h3><p>O quilombo liderado por Zeferina se tornou símbolo da resistência negra na região.</p></li>
+        <li><span class="year">1998</span><h3>Instituto Oyá e Cortejo Afro</h3><p>Nascem, no terreiro Ilê Axé Oyá, o Instituto Oyá e o bloco Cortejo Afro. Algumas fontes citam 1990 para o Instituto.</p></li>
+        <li><span class="year">Hoje</span><h3>Memória que continua</h3><p>Pirajá segue como sede do Cortejo Afro e do Instituto Oyá, formando crianças e jovens e mantendo viva a cultura afro-brasileira.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="galeria" class="room light">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Sala 7</p><h2>Galeria de fotos</h2></aside>
+    <div class="exhibit">
+      <p>Fotografias das pessoas entrevistadas e da história de Pirajá.</p>
+      <div class="gallery">
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto 1</figcaption></figure>
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto 2</figcaption></figure>
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto 3</figcaption></figure>
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto 4</figcaption></figure>
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto 5</figcaption></figure>
+        <figure><div class="frame"><div class="mat"><div class="slot">Espaço para foto</div></div></div><figcaption>Foto 6</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="equipe" class="room light" style="background:#E0C98F">
+  <div class="wrap room-grid">
+    <aside class="plaque"><p class="room-no">Créditos</p><h2>Equipe e agradecimentos</h2></aside>
+    <div class="exhibit credits">
+      <p class="school">Colégio Estadual Alberto Santos Dumont</p>
+      <h3>Professores</h3>
+      <ul class="team"><li>Fabiana</li><li>Sulivan</li></ul>
+      <h3>Alunos do 3MC</h3>
+      <ul class="team">
+        <li>Gabriella Santos</li><li>Érica Oliveira</li><li>Beatriz Moraes</li>
+        <li>Marlon</li><li>Israel Ferreira</li><li>Carlos Henrique</li><li>Nicolas Gabriel</li>
+      </ul>
+      <p style="margin-top:1.6rem">Agradecemos a todas as pessoas que compartilharam suas histórias, fotografias e memórias com o nosso museu.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="thanks">Obrigado pela visita</span>
+  Turma 3MC · Museu Virtual de História, Cultura e Memória
+  <small>Pirajá, Território Ancestral</small>
+</footer>
+
+<script>
+(function(){
+  var nav=document.querySelector('nav');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#"]');
+    if(!a)return;
+    var id=a.getAttribute('href').slice(1);
+    var el=id&&document.getElementById(id);
+    if(!el)return;
+    e.preventDefault();
+    var off=nav?nav.offsetHeight:0;
+    var y=el.getBoundingClientRect().top+window.pageYOffset-off;
+    window.scrollTo({top:Math.max(y,0),behavior:reduce?'auto':'smooth'});
+    try{history.replaceState(null,'','#'+id);}catch(err){}
+  });
+})();
+</script>
+</body>
+</html>
